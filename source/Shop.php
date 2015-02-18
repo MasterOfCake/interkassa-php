@@ -1,29 +1,11 @@
 <?php
-/**
- * Interkassa API for PHP
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @license MIT-style license
- * @package Interkassa
- * @author Anton Suprun <kpobococ@gmail.com>
- * @version 1.0.0
- */
 
-/**
- * Interkassa shop class
- *
- * This class represents a shop. It holds shop id and secret key. It also has
- * several convenience methods to work with the API.
- *
- * @license MIT-style license
- * @package Interkassa
- * @author Anton Suprun <kpobococ@gmail.com>
- * @version 1.0.0
- */
-class Interkassa_Shop
-{
+namespace iiifx\Interkassa;
+
+# @TODO Переписать
+
+class Shop {
+
     /**
      * Shop id
      *
@@ -47,9 +29,8 @@ class Interkassa_Shop
      *
      * @return Interkassa_Shop
      */
-    public static function factory(array $options)
-    {
-        return new Interkassa_Shop($options);
+    public static function factory ( array $options ) {
+        return new Interkassa_Shop( $options );
     }
 
     /**
@@ -63,18 +44,17 @@ class Interkassa_Shop
      *
      * @throws Interkassa_Exception if any option values are missing
      */
-    public function __construct(array $options)
-    {
-        if (!isset($options['id'])) {
-            throw new Interkassa_Exception('Shop id is required');
+    public function __construct ( array $options ) {
+        if ( !isset( $options[ 'id' ] ) ) {
+            throw new Interkassa_Exception( 'Shop id is required' );
         }
 
-        if (!isset($options['secret_key'])) {
-            throw new Interkassa_Exception('Secret key is required');
+        if ( !isset( $options[ 'secret_key' ] ) ) {
+            throw new Interkassa_Exception( 'Secret key is required' );
         }
 
-        $this->_id         = $options['id'];
-        $this->_secret_key = $options['secret_key'];
+        $this->_id = $options[ 'id' ];
+        $this->_secret_key = $options[ 'secret_key' ];
     }
 
     /**
@@ -86,9 +66,8 @@ class Interkassa_Shop
      *
      * @return Interkassa_Payment
      */
-    public function createPayment(array $data)
-    {
-        return Interkassa_Payment::factory($this, $data);
+    public function createPayment ( array $data ) {
+        return Interkassa_Payment::factory( $this, $data );
     }
 
     /**
@@ -102,13 +81,12 @@ class Interkassa_Shop
      *
      * @throws Interkassa_Exception if received shop id does not match current shop id
      */
-    public function receiveStatus(array $source = null)
-    {
-        if ($source == null) {
+    public function receiveStatus ( array $source = NULL ) {
+        if ( $source == NULL ) {
             $source = $_REQUEST;
         }
 
-        return Interkassa_Status::factory($this, $source);
+        return Interkassa_Status::factory( $this, $source );
     }
 
     /**
@@ -116,8 +94,7 @@ class Interkassa_Shop
      *
      * @return string
      */
-    public function getId()
-    {
+    public function getId () {
         return $this->_id;
     }
 
@@ -126,8 +103,7 @@ class Interkassa_Shop
      *
      * @return string
      */
-    public function getSecretKey()
-    {
+    public function getSecretKey () {
         return $this->_secret_key;
     }
 }
