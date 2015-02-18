@@ -1,53 +1,24 @@
 <?php
-include 'interkassa.php';
-Interkassa::register();
+require_once( dirname( __DIR__ ) . '/source/Facade.php' );
 
-$shop_id = '52e0105ebf4efc070d704c1d';
-$secret_key = 'rVCrCFMt3Tdz2kzT';
+use iiifx\Interkassa\Facade;
 
-// Create a shop
-$shop = Interkassa_Shop::factory(array(
-    'id' => $shop_id,
-    'secret_key' => $secret_key
-));
+$shopId = '54b3b276bf4efca61d544432';
+$testKey = 'nC8ZFeP7ZgkuSTuh';
+$currency = 'USD';
 
-if (count($_POST))
-{
-    try
-    {
-        $status = $shop->receiveStatus($_POST); // POST is used by default
-    } catch (Interkassa_Exception $e)
-    {
-        // The signature was incorrect, send a 400 error to interkassa
-        // They should resend payment status request until they receive a 200 status
-        header('HTTP/1.0 400 Bad Request');
-        exit;
-    }
+$shop = Facade::createShop( [
+    'shopId'       => $shopId,
+    'secretKey'    => $testKey,
+    'currencyCode' => $currency,
+] );
 
-    $payment = $status->getPayment();
-}
-else
-{
-    // Create a payment
-    $payment_id = '1'; // Your payment id
-    $payment_amount = '12.52'; // The amount to charge your shop's user
-    $payment_desc = 'Test'; // Payment description
+$paymentId = 1000;
+$paymentAmount = 175.5;
+$paymentDescription = 'Описание платежа';
 
-    $payment = $shop->createPayment(array(
-        'id' => $payment_id,
-        'amount' => $payment_amount,
-        'description' => $payment_desc,
-        'locale' => 'en',
-        'currency' => 'USD'
-    ));
-    $payment->setBaggage('test_baggage');
-
-    ?>
-    <form action="<?php echo $payment->getFormAction(); ?>" method="post">
-        <?php foreach ($payment->getFormValues() as $field => $value): ?>
-            <input type="hidden" name="<?php echo $field; ?>" value="<?php echo $value; ?>"/>
-        <?php endforeach; ?>
-        <button type="submit">Submit</button>
-    </form>
-<?php
-}
+$payment = $shop->createPayment( [
+    'paymentId'          => $paymentId,
+    'paymentAmount'      => $paymentAmount,
+    'paymentDescription' => $paymentDescription,
+] );
